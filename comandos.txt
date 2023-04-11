@@ -1,0 +1,6 @@
+//Para ver los procesos activos
+netstat  -ano | findstr LISTENING | findstr 8080
+
+//Investigar
+Spring Security
+Control de errores

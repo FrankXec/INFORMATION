@@ -1,0 +1,19 @@
+Docker
+
+https://hub.docker.com --> repositorio
+
+imagenes --> docker pull image/image --> opcional :alpine --> alpine pesa menos
+
+dockerfile --> crear nuestras propias imagenes
+-capas
+		FROM --> INICIA UNA NUEVA ETAPA DE CONSTRUCCION Y ESTABLECE LA IMAGEN BASE --> FROM <IMAGE> [:<TAG>] [AS <NAME>]
+		RUN --> EJECUTA UN COMANDO --> RUN <COMANDO>
+		COPY/ADD --> COPIA ARCHIVOS O DIRECTORIOS AL CONTENEDOR --> COYPY/ADD [--CHOWN = <USER>:<GROUP>] <SRC> ... <DEST>
+		ENTRYPOINT --> CONFIGURAR UN CONTENEDOR PARA QUE SEA EJECUTABLE --> ENTRYPOINT ["EXECUTABLE", "PARAM1", "PARAM2"]
+		CMD --> LEVANTAR EL SERVICIO, SOLO PUEDE HABER UN CMD --> CMD ["EXECUTABLE", "PARAM1", "PARAM2"]
+
+.DOCKERIGNORE --> excluye archivos o directorios que no se requieren para la construccion de la imagen
+
+
+-comandos
+docker images --> muestra las imagenes instaladas
