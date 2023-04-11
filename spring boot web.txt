@@ -1,0 +1,76 @@
+@Controller
+class Class{
+	@RequestMapping("home") //localhost:8080/home
+	public String home(){ //@RequestParam("name") String myName -->parametro por URL
+		return "home.jsp"; //search in webapp
+	}
+}
+
+
+
+-->src/main/webapp
+				-->Home.jsp
+
+
+dependencias jsp
+		--> tomcat-jasper
+
+
+->properties
+		pring.mvc.view.prefix=/pages/
+		pring.mvc.view.sufflix=.jsp
+	//cambia en controller
+	return "home" //ya no colocamos .jsp
+	//cambia en webapp
+		webapp/pages
+					home.jsp
+
+-->ModelAndView
+		@Controller
+		class Class{
+			@RequestMapping("home")
+			public ModelAndView home(@RequestParam("name") myName){
+				ModelAndView view = new ModelAndView();
+				view.addObject("key",value);
+				view.setViewName("home")
+				return view;
+			}
+		}
+
+--->crud propio de spring boot
+public interface ClassRepo extends CrudRepository<ClassModel,Integer>{
+	//podemos crear busquedas personalizadas que nos permite el crud, pero se deben seguir siertas normas
+	//debemos empezar por findBy..nombredelatributo.. -> findByName(String name); //ver doc
+
+	//pero tambien se pueden crear propios si no existen 
+	@Query("from Class where attribute = ?1 order by attribute")
+	List<ClassModel> findByAttributeShorter(String attribute); //no es importante pasarle el numero de parametro ya que se sobreentiende.
+}
+
+--->PathVariable
+@RequestMapping("api/user/{id}")
+@BodyRequest
+public String getOne(@PathVariable("urlVariableName") int id){
+	
+} 
+
+-->produce
+@RequestMapping(path="api/user/{id}",produces={"application/xml"}) //de esta manera solo producira xml
+@RequestMapping(path="api/user/{id}",consumes={"application/json"}) //en el body solo se puede mandar json, consume json
+
+
+----------REST
+springboot tiene una dependencia propia que comvierte las listas retornadas en formato json -> jackson-core
+Spring soporta unicamente json, si queremos que acepte xml debemos incluir la libreria -> jackson dataformat xml
+
+@RequestMapping
+@GetMapping
+@PostMapping
+@DeleteMapping
+@PutMapping
+
+
+@Controller
+@RestController
+
+(@RequestBody Class class)

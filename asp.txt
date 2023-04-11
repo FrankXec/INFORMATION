@@ -1,0 +1,380 @@
+ASP NET CORE ---> mvc
+//habilitar https
+dotnet dev-certs https --trust
+
+--controller //controlador
+-->El controller extiende de Controller;
+-->El Controlador debe tener NameController : Controller;
+-->Los metodos deben de llamarse igual a las vistas si queremos por defecto, de lo contrario ver sobrecarga de metodos;
+
+--razor //vista
+se puede utilizar
+@Model , @ViewData, @ViewBag
+--> en Controller podemos asignar valores a los datos
+-->@Model -> return View(data); //referencia al modelo que podemos utilizar en el razor
+-->@ViewData -> ViewData["name"] = value;
+-->@ViewBag -> ViewBag.Name = value;
+-->@{ Layout = "name"} //podemos indicarle a la vista que layout utilizara, si no colocamos ruta buscara por defecto en la carpeta Shared
+--><partial name="nombre" /> //aca podemos aderir una pagina cshtml dentro de la vista, opcional podemos mandar como parametro el modelo que recibira el otro archivo, de lo contrario utilizara el mismo @Model del archivo principal. -> model="@Model.value" --> enviamos un unico valor que debera ser recibido.
+-->@foreach(var item in list){//instrucciones}
+
+-->Para asignar valores o leer valores debemos utilizar el atributo asp-for="" dentro de las etiquetas input o label. Este debe referenciar al modelo que vamos a utilizar.
+@Model Estudiante --> entidad
+<label asp-for="Nombre"/> -->atributo Nombre lectura
+<input asp-for="Nombre"/> -->atributo Nombre Escritura
+-->Incluir en el controller [HttPost]
+
+
+--model //Modelo
+--> los modelos son pocos y representan una entidad de la aplicacion
+[Required] -->campo requerido, encima del atributo
+
+--Otros
+-->ViewStart es donde inicia todo --> por lo regular inicia con el _layout, tambien se puede configurar la pagina inicial;
+-->ViewPort es donde estan las importaciones --> estas importaciones las utilizan todas las vistas
+-->@RenderBody --> aca es donde colocamos la parte de nuestra vista en el layout;
+-->Program.cs --> aca podemos indicar que pagina o que controlador sera la por defecto al momento de arrancar la app
+
+****************
+Entity Framework
+--> tenemos que agregar los packetes de NUGGET dependiendo de la bd que vamos a utilizar.
+-->Convecion: cada entidad debe de tener un ID u ObjetoId -> Id o EscuelaId
+-->Convecion: cada hijo debe tener una referencia al padre -> public string EntityId { get; set; } public EntityFather EntityFatherName { get; set;}
+-->Convecion: cada padre debe tener una lista de sus hijos -> public List<EntityChild> EntityChildNameList { get; set;}
+--> Las listas devueltas por el entityframework pueden ser utilizados por IEnumerable mas no por List
+* dotnet add package Microsoft.EntityFrameworkCore.InMemory //en memoria
+* dotnet add package Microsoft.EntityFrameworkCore.SqlServer //sql server
+**
+-> Para utilizar el efc debemos crear un CONTEXTO > public class EscuelaContext : DbContext ->Extiende de dbcontext 
+-> El entityframeworkcore debe tener un contexto en el cual le indicamos todas las entitdades en forma list y en plurar el nombre: DbSet<Entity> entitys -> DbSer<Escuela> Escuelas;
+-->Contexto full
+public class EscuelaContext : DbContext{
+	public DbSet<Escuela> Escuelas { get; set;}
+	...
+	...
+	public EscuelaContext(DbContextOptions<EscuelaContext> options) : base(options){
+
+	}
+}
+--> fin
+**Context en Program.cs -> en otro core es en startup 
+builder.Services.AddDbContext<EscuelaContext>(
+    options => options.UseInMemoryDatabase(databaseName:"test") //use in memori puede sustituirse por la base de datos que vayamos a utilizar
+);
+**fin
+****En donde vayamos a utilizar el contexto]
+--> creamos un objeto privado de tipo EscuelaContext --> private EscuelaContext _context;
+--> Creamos un constructor que reciba como parametro un EscuelaContext y lo almacenamos en el contexto; -> public XController(EscuelaContext context){ _context = context}
+--> uitlizamos _context para cualquier operacion que querramos utilizar -> var x = _context.Entity.LinqMetod //utilizar linq
+***Realizar acciones durante la ejecucion del entityframeworkcore
+-->En escuelaContext Debemos SOBREESCRIBIR(override) al metodo OnModelCreating --> protected override void OnModelCreating(ModelBuilder modelBuilder)
+-->OJO no debemos reemplazar el ModelBuilder de inicio, debemos agregarle mas fucionalidades
+-->base.OnModelCreating(modelBuilder); --> desde este punto ya podemos agregarle funcionalidades;
+-->modelBuilder.Entity<Entity>().HasData(newDataToEntity); -->tiene que ser un objeto O un ARRAY de objetos;
+
+
+**Rutas
+-->Dentro del controlador
+-->Pueden haber muchas rutas ej: [Route("app")] [Route("app/{parameter}")]
+--------------> [Route("app/test/{parameterName1}")] --> va encima del metodo --> public IA Index(string parameterName1){}
+
+
+
+*******OTROS
+--> Esto solo funciona durante el proceso, luego se elimina todo lo demas, dura un rato
+using(funcionalidad){
+	instrucciones
+}
+-->HTML helpers o tags helpers esto es de ASP.
+@Html.....
+	.DropDownList(
+		"AttributeObjectName", Html.GetEnumSelectList<EnumName>(), "Optional Default text Selected",//estilos o fuentes css\\new{@class = "bootstrap-class"}
+	)
+-->Crear 
+_context.Add(Entity);
+_context.SaveChanges();
+
+-->public virtual String name //esto indica que puede ser SOBREESCRITO;
+-->ModelState.IsValid() //verifica que el modelo sea valido
+--> <div asp-validation-summary="All"></div
+-->[StringLenght(maximo)]
+-->[MinLenght(minimo)]
+-->[Required(ErrorMessage="error personalizado")]
+-->[Display(Prompt="Escriba algo",Name="miNombre")]
+--> unobstrusive  //validaciones del lado del cloiente
+
+****Escafolding
+dotnet install -g dotnet-aspnet-codegenerator //instala globalmente, solo se debe instalar una vez gracias al -g
+dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design //agregamos los packetes
+dotnet restore //restaura todos los packetes instalados
+
+--> implementacion --> tiene mas opciones, investigar;
+--> ` significa que la linea no a acado y que siga en la linea siguiente
+dotnet aspnet-codegenerator controller `
+-name NameController `  // AlumnoController
+-m `ModelName`  //Alumno vista
+-dc `DBContextCreated`  //EscuelaContext
+--relativeFolderPath Controllers `
+--useDefaultLayout `
+-referenceScriptLibraries -f
+
+
+
+
+
+
+---------.NET Core API
+--> Tipos de parametro
+[FromBody] --> Datos desde el cuerpo del HTTP Request, mayormente se usa en Post/PUt
+[FromRoute] --> datos desde la Ruta
+[FromQuery] --> data desde la URL
+
+
+--> en controllers tendremos nuestras api
+
+[Route("api/[controller]")] //controller cambiarlo por el api, ej: Usuario -> api/usuario
+[ApiController]
+public class ApiController : ControllerBase{
+	[HttpGet] //dependiendo del metodo HTTP que querramos utilzar, get, post, put, delete, etc.
+	public void GetApiName(){ //GetUsuarios()
+
+	}
+}
+
+get con y sin parametros
+[Route("api/usuario")] -->sin parametro
+[Route("api/usuario/{id}")] -->parametro
+[Route("api/usuario/{id?}")] -->parametro opcional
+[Route("api/[controller]")] -->usa el nombre de la clase
+[HttpGet][Route("{id}")]
+[HttpGet("{id}")]
+
+-->Verify Model
+if (!ModelState.IsValid){ return BadRequest();} //if the model is invalid we response a bad request
+
+
+
+--> Save
+[HttpPost]
+public async Task<ActionResult> (Product product){
+	...
+}
+
+--> Update
+[HttpPut("{id}")]
+public async Task<ActionResult> ( int id, [FromBody] Product product)
+
+
+--Delete
+[HttpDelete("{id}")]
+public async Task<ActionResult> (int id);
+
+
+
+--DeleteMultiple
+[HttpPost("Delete")]
+public async Task<ActionResult> ([FromQuery] int[] ids)
+--> url --> api/Delete?ids=1&ids=2&ids=n..
+
+
+--> Models en api
+Father
+public virtual List<Child> childs {get;set;}
+
+Children
+public string idOtherModel {get;set;}
+[JsonIgnore]
+public virtual OtherModel otherModel {get;set;}
+
+ActionResult<IEnumerable<User>> //retorna una accion
+return Ok(list); //si es ok devuelve lista en formato json
+return NotFound(); //cuando no devuelves ningun valor --> devuelve un 404 Not Found en formato json
+return BadRequest(); // if the model sended is not valid
+return NoContent(); // no retorna nada 
+
+public Async Task<ActionResult> getUsers(){ --> tambien se puede hacer devolviendo un IEnumerabl -> Tas<IEnumerable<User>>
+	var users = await db.User.ToListAsync();
+	return Ok(users);
+}
+
+**As Save
+return CreatedAtAction(
+	"Get Product",
+	new { id = product.id}, //El id del objeto que guardamos
+	object //el objeto que guardamos
+);
+
+
+
+
+
+---> Entity Framework
+db.Product;
+db.Product.ToList();
+db.Product.Find(id);
+.Spik()
+.Take()
+.Where(p => p.Attribute < query)
+
+
+
+
+_context.Product.Add(Entity);
+await _context.SaveChangesAsync(); //Async si tenemos el metodo async; --> _context.SaveChanges(); //No await, no Async();
+
+_context.Entry(Entity).State = EntityState.Modified;
+await _context.SaveChangesAsync();
+
+
+**configurations program
+//in program you can define options to response and request
+**builder.Service.AddControllers() //here we can define apirequest options
+	.ConfigureApiBehaviorOptions( option => {
+		option.SuppressModelStateInvalidFilter = true //coin esta opcion no importa si el modelo enviado es correcto, siempre lo aceptara.
+	}
+	)
+
+-->first find the entity with the id and if not found it just return NotFound();
+_context.Entity.Remove(Entity);
+await _context.SaveChangesAsync()
+return entity;
+
+
+_context.Entity.RemoveRange(entitys) //remove multiple entitys
+savechanges**
+
+
+
+
+
+
+************ avanzado
+Colsulta por paginacion
+**Crear una clase QueryParameters con atributos Size y Page
+
+**En el controller, en obtener todo tenemos que recibir como [FromQuery] QueryParameter queryParameter;
+y hacer una consulta con 
+**IQueryable<Entity> products = _context.Products
+products = products.Skip(queryParameter.Size * (queryParameter.Page -1)).Take(queryParameter.Size);
+return Ok(await products.ToArrayAsync();)
+
+
+
+
+********versionamiento
+descargar por nugget:
+->Microsoft.AspNetCore.Mvc.Versioning
+->same							     .ApiVersioning //para arreglar swiger
+
+
+-->Configuracion Swiger
+->program.cs
+builder.Service.AddVersionedApiExplorer(options => {
+	options.GroupNameFormat = "'v'VVV";
+	options.SubstituteApiVersionInUrl = true;
+});
+
+
+->por Header x-api-version: 1.0 --> debe ser aceptado por el header despues
+->por URL -> /v1.0/products --> separados por versiones pero muestra la version de la api
+->por Query -> products?api-version=1.0 --> mix de las dos anteriores
+
+-->Todos
+-->Program.cs
+builder.Service.AddApiVersioning(option => {
+	option.ReportApiVersions = true; //responde si tiene una version
+	option.DefaultApiVersion = new ApiVersion(1.0) //default version
+	option.AssumeDefaultVersionWhenUnspecifi = true; //asume que si no se sepecifica una version tomara la de default
+	...
+});
+
+URL
+-->Program.cs
+
+-->Controller
+[ApiVersion("1.0")]
+[Route("/v{v:apiVersion}/products")]
+[ApiController]
+public class ProductoV1Controller : ControllerBase{}
+
+Header
+-->Program.cs
+ ...
+ option.ApiVersionReader = new HeaderApiVersionReader("X-API-VERSION");
+
+ -->Controller
+[ApiVersion("1.0")]
+[Route("products")]
+[ApiController]
+public class ProductoV1Controller : ControllerBase{}
+
+--> In header wen we send a request
+Key:Value --> X-API-VERSION : 1.0
+
+QueryParameter
+-->Program.cs
+ ...
+ option.ApiVersionReader = new QueryStringApiVersionReader("optional-configuration-version"); //if we not configure this part the default url name is api-version
+
+ -->Controller
+[ApiVersion("1.0")]
+[Route("products")]
+[ApiController]
+public class ProductoV1Controller : ControllerBase{}
+
+--> In URL
+product?api-version=1.0
+
+
+
+
+
+-----------> seguridad
+-> Hsts //usa estrictamente un https -> usar en produccion, no en desarrollo
+	-->program
+	if(app.Environment.IsDevelopement()){
+
+	}else{
+		app.UseHsts();
+	}
+-->Core Security
+Per controller/action
+	[EnableCors]
+Disable
+	[DisableCors()]
+Default Policy in Program
+	builder.Services.AddCores(options =>{
+		options.AddDefaultPolicy(builder => {
+			builder
+				.WithOrigins("https://localhost:7257")
+				.WithHeaders("API-X-VERSION") //opcional para agregar en la cavecera la version de la api
+		})
+	})
+
+	app.UseCors();
+
+
+--> consumir wservice --> web app --> pagina con razor
+<ul id="product-list"></ul>
+<script>
+	let productList = document.getElementByBid("product-list")
+	let url = "https://localhost:7233/products"
+
+	fetch(url)
+		.then(response => response.json())
+		.then(data => showProducts(data))
+		.then(ex =>{
+			alert('error')
+			console.error(ex)
+		})
+
+	function(products){
+		products.forEach(product => {
+			let li = document.createElement("li")
+			let text = `${product.name} (\Q${product.price})`
+			li.appendChild(
+				document.createAppendTextNode(text))
+			productList.appendChild(li)
+		});
+	}
+</script>

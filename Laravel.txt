@@ -1,0 +1,30 @@
+Lavel
+
+--Migracion
+php artisan migrate -> migra a la base de datos
+
+php artisan make:model Name -mcr --> crear modelo, controlador y recursos
+
+//Rutas 
+php artisan routes:list -> view all rutes in console
+
+Route::get('/',function*(){
+	return view('model.view');
+});
+
+Route::get('/route',[ModelController::class,'methodName']);
+
+Route::resource('model',ModelController::class);
+
+//Blink
+{{}} -->para instrucciones dentro del blink se utilizan doble corchetes
+action="{{ url('/model.view')}}""
+@csrf -->dentro del formulario le indicamos de donde venimos, hay que colocarlo siempre
+
+//request
+request()->exception('name'); -> no incluye el valor que nos llega
+
+//subir foto
+if($request->hasFile('NameOfHtmlAttribute')){
+	$variable['NameOfHtmlAttribute'] = $request->file('NameOfHtmlAttribute')->store('uploads','public')
+}

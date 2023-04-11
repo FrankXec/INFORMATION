@@ -1,0 +1,20 @@
+Notas .NET CORE
+-ASP.NET MVC Entity Framework DATABASE FIRST
+	-Instalar nuget
+		-Entity Framework SQL Server
+		-Entity Framework core tools
+	-Terminal Nuget (PM)
+		Scaffold-DbContext "Server=DESKTOP-85NKVO2\SQLEXPRESS; Database=demodb;User ID=sa; Password=h@acker644; Trusted_Connection=True; Integrated Security=False;Encrypt=False;TrustServerCertificate=False" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
+
+-ASP.NET WEB API Entity Framework CODE FIRST
+	-Instalar nuget
+		-Entity Framework SQL Server
+		-Entity Framework core tools
+	-ConnectionString: "Server=DESKTOP-85NKVO2\SQLEXPRESS; Database=Bar;User ID=sa; Password=h@acker644; Trusted_Connection=True; Integrated Security=False;Encrypt=False;TrustServerCertificate=False;MultipleActiveResultSets=True"
+	-Modificar program.cs en proyecto principal - - - Agregar ConnectionString --- Agregar Scope Migracion
+	-Colocar como proyecto principal la api.
+	-Consola (PM) (Db->donde esta la info de base de datos)-> 
+		->  Add-Migration <Name> -> Add-Migration InitDB
+
+
+

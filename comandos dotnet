@@ -1,0 +1,112 @@
+Comandos dotnet
+dotnet                   	--> muestra si esta instalado
+dotnet new					--> para mostrar los posibles programas que se pueden crear
+dotnet new appCreation		--> para crear un nuevo proyecto indicandole cual
+dotnet run					--> ejecuta la aplicacion
+dotnet build				--> crea ejecutable ./bin -->.dll es el ejecutable
+dotnet build -c Release -r win10-x64 --> dependiendo los parametros, crea un ejecutable del sistema operativo, en este caso, para windows 10, 64 bits, un ejecutable .exe.
+
+//Fundamentos C#
+delegate -> punteros de objetos
+expresiones lamda son un delegado ej: object.removeAll((Object ob) => ob.attribute == "value" && ob.attribute == "value2");
+en string se puede concatenar con: var x = "".PadLeft || PadRight
+LinQ -> consultas de forma declarativa, tipo SQL
+Herencia se hace con ¨:¨
+->public abstract class name //clase abstracta que no permite crear objetos
+->public sealed class name //crea clase sellada que NO PERMITE HEREDAR, pero si permite crear objetos
+->public interface class name // crea una interface, las interfaces solo pueden crear atributos y metodos pero no implementarlos, los que implementen la interface deben implementar todos sus metos e intefaces.
+->public struct name // estructura que puede almacenar tipos basicos como string, int, etc. Recomendable utilizar en vez de clases cuando necesitamos almacenar informacion constante.
+
+**************************
+polimorfismo: padre puede usar al hijo, pero no sucede a la inversa: ej:
+ObjetoEscuela -> padre
+ObjetoAlumno -> hijo
+
+Alumno = new Alumn() -> true > tiene todos los atributos y metodos de alumno -> es de tipo alumno
+ObjetoEscuela = new Alumn() -> true ->tiene todos los atributos y metodos de objetoescuela -> es de tipo alumno
+Alumno = new ObjetoAlumno() -> false
+ObjetoAlumno = new Alumn() -> false
+
+conclusion: Un padre puede ser instanciado por sus hijos, pero los hijos no pueden instanciar al padre. Un padre puede verse como sus hijos, pero los hijos no pueden verse como sus padres.
+**************************
+if objectAbstract is objectConcret
+	ObjectConcret var= (ObjectConcret) ObjectAbstract
+
+ObjectConcret var=  ObjectAbstract as ObjectConcret; //Si es de ese tipo, se asigna valor, de lo contrario quda NULL. es mas recomendada que el IF.
+**************************
+agregar muchos objetos distintos utilizando una clase padre
+var abstract = List<Abstract>
+abstract.add(concretx) --> un objeto
+abstract.addRange(concretx.listConcretj) --> una lista de objetos
+**************************
+Lista con LinQ
+interface Interface
+abstract Abstract
+class Concret
+
+var list = new List<Abstract>;
+var newList = from obj in list select new Abstract(); //false
+var newList = from obj in list select (Interface) obj; //false
+var newList = from obj in list where obj is Interface select (Interface) obj; //true -> se puede hacer con clases normales tambien
+**************************
+Metodos tuplas, devuelven mas de un valor
+public (List<Object>, int) getList(){ 
+	return list,5;
+}
+***************************
+Parametros de salida;
+public List<Object> list(out int conteo, list) {}//le indicamos con out que ese parametro es de SALIDA, pueden ser los que querramos, todos los parametros de salida deben inicializarse y contener valor;
+***************************
+Solo lectura, esto permite crear metodos para solamente leer y no modificar
+para ello, dependiendo si queremos una lista, un objeto u otro tipo vamos a indicar lo siguiente en el metodo: IReadOnly -> una interfaz que indica que es solo lectura.
+-> public IReadOnlyList<Object> listMetodh { retur listObject.AsReadOnly(); }
+***************************
+Dictionary<key,value> -> un diccionario nos permite agregarle una llave a nuestras listas.
+Dictionary<string, List<Object>> diccionario = new Dictionary<string,List<Object>>();
+diccionario.Add("bancos",List<bancos>); diccionario.Add("cliente",List<clientes>); //true para un tipo en especifico, false si es una interface u clase abstracta
+** otra solucion para clases abstratas e interfaces
+Dictionary<string, IEnumerable<Abstract>> get{
+	var diccionario = new Dictionary<string, IEnumerable<Abstract>>();
+	//solucion 1
+	diccionario.Add("name", new[] {concret})
+	//solucion 2
+	diccionario.Add("name", concret.concret2.Cast<abstract>());
+}
+**************************
+Evento del sistema -> todos los eventos funcionan con DELEGATE
+AppDomain.CurrentDomain.ProccessExit -> eventos del sistema
+AppDomain.CurrentDomain.ProccessExit += nuestroEvento; -> crear metodo -> nuestroEvento(object sender, EventArgs e){ instrucciones;}
+AppDomain.CurrentDomain.ProccessExit += (sender, e)=> instrucciones; -> lo mismo pero en expresiones lamda
+
+*************************
+LinQ
+Siempre utilizar libreria system.Linq
+Linq siempre devuelve listas
+.trygetvalue(type object,type listReturn)
+.cast(type)();
+.Distinct(); va despues de la consulta ej: (consulta).Distinct();
+
+--
+from obj  in list select ev.attributex.attributen; //return los atributos n del atributo x, puedes devolver x solamente si deseas
+where obj.attribute > 5 //va antes de select
+--
+para seleccionar mas de un valor:
+select new {val1, valn} //devuelve una lista compuesta
+--
+para asignarle un nombre a lo que vamos a selecionar:
+{
+namex = attribute.sameName
+namey = attribute.sameName
+}
+--
+group by
+**El grupo sustituye al objecto creado en 'from'
+from obj in list group obj by //{} muchos grupos, importante orden //obj.attribute unico grupo \\ into groupName select new {outName = groupName.key //.key cuando es solo un valor, cuando es un grupo ponemos .key.valorSeleccion\\ }
+groupName.Average(lamdaValue => lamdaValue.value) //saca promedio
+*************************
+Otros
+nameof
+typeof
+is
+as
+out

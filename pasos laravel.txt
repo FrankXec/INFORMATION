@@ -1,0 +1,23 @@
+pasos
+descargar composer
+descargar node
+crear proyecto con composer -> composer create-project laravel/laravel folder v8
+
+crear db;
+crear modelo -> php artisan make:model Product -m
+correr migracion -> php artisan migrate;
+
+crear crud -> composer require ibex/crud-generator --dev
+		   -> php artisan vendor:publish --tag=crud
+		   -> php artisan make:crud products //nombre de la tabla
+
+ laravel UI -> composer require laravel/ui
+ 		    -> php artisan ui bootstrap
+ 		    -> php artisan ui bootstrap --auth
+
+correr DEV -> npm install && npm run dev
+		   -> php artisan serve
+		   ->cerra serv
+		   ->php artisan ui bootstrap
+		   ->npm install && npm run dev
+		   ->php artisan serve
